@@ -7,13 +7,23 @@ Step 1: Open Linux terminal and Install
 apache, mysql servers and php using following commands:
 
 ```bash
+sudo apt update
 sudo apt install apache2
 sudo apt install mysql-server
 sudo apt install php libapache2-mod-php
 ```
+Adjust firewall settings:
+```bash
+sudo ufw app list
+sudo ufw allow in "Apache"
+sudo ufw status
+```
+Check Apache2 Ubuntu Default Page:
+http://your_server_ip
+
 Step 2: Set up mysql root user with password using:
 ```bash
-sudo mysql_secure_installation utility
+sudo mysql_secure_installation
 ```
 
 
@@ -21,23 +31,32 @@ Step 3:Create the directory for your_domain as follows:
 sudo mkdir /var/www/aman_kumar
 
 Step 4: Next, assign ownership of the directory with the $USER environment variable, which will reference your current system user:
+```bash
 sudo chown -R $USER:$USER /var/www/aman_kumar
+```
 
 Step 5: Inside the folder /var/www/aman_kumar make a project folder.
 Inside the folder make files index.php  ,update.php ,add.php,delete.php,connect.php and style.css
 
-Step 6: Using the following commands download Mysql drivers
-(which are necessary for connection).
+Set Virtual Host by this code and paste this config in blank page:
 ```bash
-sudo apt-add-repository ppa:ondrej/php
-sudo apt-get install php7.0
-apt-get install php7.4-mysql
-service apache2 restart
+sudo nano /etc/apache2/sites-available/your_domain.conf
 ```
-Step 7: Start the apache and mysql server
+<VirtualHost *:80>
+    ServerName your_domain
+    ServerAlias www.your_domain
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/your_domain
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+Enable virtual Host:
 ```bash
-sudo service apache2 start
-sudo service mysql start
+sudo a2ensite your_domain
+sudo a2dissite 000-default
+sudo apache2ctl configtest
+sudo systemctl reload apache2
 ```
 
 ## Setting files and Database
@@ -68,11 +87,10 @@ mysql> CREATE TABLE patientdb.patienttb(
 
 WEBSITE Description:
 Patient Management website with CRUD operations .
- 
+
 ### PHP File Description
-PHP and HTML code written in index.php made in assign folder in /var/www/aman_kumar.
-The website contains a static plain html part where details of the authors and the assignment is given
-Website also contains a html form where PHP is used to connect to the database and send the submitted form details to insert into the mysql database.
+PHP and HTML code written in index.php & all others made in assign folder in /var/www/aman_kumar.
+The website contains a static plain html part where add,update ,delete,view are written where PHP is used to connect to the database and send the submitted  details to insert into the mysql database.
 
 Create connection to database using: \
 $con = new mysqli($server, $username, $password, $database);
